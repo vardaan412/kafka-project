@@ -67,41 +67,6 @@ resource "aws_route_table_association" "public_assoc" {
   route_table_id = aws_route_table.public_rt.id
 }
 
-# NAT Gateway for Private Subnets
-resource "aws_eip" "nat_eip" {}
-
-resource "aws_nat_gateway" "kafka_nat" {
-  allocation_id = aws_eip.nat_eip.id
-  subnet_id     = aws_subnet.public_subnet_1.id
-  tags = {
-    Name = "kafka-nat-gateway"
-  }
-}
-
-# Private Route Table
-resource "aws_route_table" "private_rt" {
-  vpc_id = aws_vpc.kafka_vpc.id
-  tags = {
-    Name = "private-route-table"
-  }
-}
-
-resource "aws_route" "private_nat_access" {
-  route_table_id         = aws_route_table.private_rt.id
-  destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.kafka_nat.id
-}
-
-resource "aws_route_table_association" "private_assoc_1" {
-  subnet_id      = aws_subnet.private_subnet_1.id
-  route_table_id = aws_route_table.private_rt.id
-}
-
-resource "aws_route_table_association" "private_assoc_2" {
-  subnet_id      = aws_subnet.private_subnet_2.id
-  route_table_id = aws_route_table.private_rt.id
-}
-
 # Security Groups
 resource "aws_security_group" "bastion_sg" {
   vpc_id = aws_vpc.kafka_vpc.id
@@ -109,12 +74,12 @@ resource "aws_security_group" "bastion_sg" {
     Name = "bastion-sg"
   }
 
-  # Allow SSH from your public IP
+  # Allow SSH from anywhere
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["49.36.179.31/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   # Allow all outbound traffic
@@ -148,6 +113,14 @@ resource "aws_security_group" "private_sg" {
     security_groups = [aws_security_group.bastion_sg.id]
   }
 
+  # Allow Zookeeper traffic
+  ingress {
+    from_port   = 2181
+    to_port     = 2181
+    protocol    = "tcp"
+    security_groups = [aws_security_group.bastion_sg.id]
+  }
+
   # Allow all outbound traffic
   egress {
     from_port   = 0
@@ -169,7 +142,7 @@ resource "aws_instance" "bastion" {
   }
 }
 
-resource "aws_instance" "private_instance_1" {
+resource "aws_instance" "kafka_instance_1" {
   ami                    = "ami-04b4f1a9cf54c11d0"
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.private_subnet_1.id
@@ -180,7 +153,7 @@ resource "aws_instance" "private_instance_1" {
   }
 }
 
-resource "aws_instance" "private_instance_2" {
+resource "aws_instance" "kafka_instance_2" {
   ami                    = "ami-04b4f1a9cf54c11d0"
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.private_subnet_2.id
@@ -191,15 +164,11 @@ resource "aws_instance" "private_instance_2" {
   }
 }
 
-# Outputs
+# Outputs for Ansible Dynamic Inventory
 output "bastion_public_ip" {
   value = aws_instance.bastion.public_ip
 }
 
-output "private_instance_1_ip" {
-  value = aws_instance.private_instance_1.private_ip
-}
-
-output "private_instance_2_ip" {
-  value = aws_instance.private_instance_2.private_ip
+output "kafka_instance_private_ips" {
+  value = [aws_instance.kafka_instance_1.private_ip, aws_instance.kafka_instance_2.private_ip]
 }

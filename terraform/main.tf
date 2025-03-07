@@ -190,6 +190,7 @@ resource "aws_instance" "kafka_instance_1" {
   key_name               = "CommonKey"
   tags = {
     Name = "kafka-instance-1"
+    Role = "kafka"
   }
 }
 
@@ -201,6 +202,7 @@ resource "aws_instance" "kafka_instance_2" {
   key_name               = "CommonKey"
   tags = {
     Name = "kafka-instance-2"
+    Role = "kafka"
   }
 }
 

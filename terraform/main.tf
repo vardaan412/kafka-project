@@ -18,7 +18,6 @@ resource "aws_subnet" "public_subnet_1" {
   availability_zone       = "us-east-1a"
   tags = {
     Name = "public-subnet-1"
-    Role = "kafka"
   }
 }
 
@@ -29,7 +28,6 @@ resource "aws_subnet" "private_subnet_1" {
   availability_zone = "us-east-1a"
   tags = {
     Name = "private-subnet-1"
-    Role = "kafka"
   }
 }
 

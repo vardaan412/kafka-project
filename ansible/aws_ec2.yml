@@ -10,4 +10,4 @@ compose:
 
 # Add vars to configure ProxyJump dynamically
 vars:
-  ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o ProxyJump=ubuntu@${BASTION_IP} -i /var/lib/jenkins/workspace/CommonKey.pem"
+  ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o ProxyJump=ubuntu@${BASTION_IP}"

@@ -182,12 +182,29 @@ resource "aws_instance" "bastion" {
     echo "YOUR_PRIVATE_KEY_HERE" > /home/ubuntu/.ssh/id_rsa
     chmod 600 /home/ubuntu/.ssh/id_rsa
     chown ubuntu:ubuntu /home/ubuntu/.ssh/id_rsa
+
+    # Configure SSH for private instances
+    echo "Host kafka-instance-1
+      HostName ${aws_instance.kafka_instance_1.private_ip}
+      User ubuntu
+      IdentityFile /home/ubuntu/.ssh/id_rsa
+      StrictHostKeyChecking no" >> /home/ubuntu/.ssh/config
+
+    echo "Host kafka-instance-2
+      HostName ${aws_instance.kafka_instance_2.private_ip}
+      User ubuntu
+      IdentityFile /home/ubuntu/.ssh/id_rsa
+      StrictHostKeyChecking no" >> /home/ubuntu/.ssh/config
+
+    chmod 600 /home/ubuntu/.ssh/config
+    chown ubuntu:ubuntu /home/ubuntu/.ssh/config
   EOF
 
   tags = {
     Name = "Bastion Host"
   }
 }
+
 
 
 

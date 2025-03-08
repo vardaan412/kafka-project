@@ -170,16 +170,16 @@ resource "aws_security_group" "private_sg" {
 
 # EC2 Instances
 resource "aws_instance" "bastion" {
-  ami           = "ami-0abcdef1234567890"  # Replace with your AMI ID
-  instance_type = "t2.micro"
-  key_name      = "CommonKey"  # AWS me jo key-pair hai, woh yaha define karo
-  subnet_id     = aws_subnet.public_subnet.id
-  security_groups = [aws_security_group.bastion_sg.name]
+  ami                    = "ami-04b4f1a9cf54c11d0"  # Replace with your AMI ID
+  instance_type          = "t2.micro"
+  key_name               = "CommonKey"  
+  subnet_id              = aws_subnet.public_subnet_1.id
+  vpc_security_group_ids = [aws_security_group.bastion_sg.id]
 
   user_data = <<-EOF
     #!/bin/bash
     mkdir -p /home/ubuntu/.ssh
-    echo "${file("CommonKey.pem")}" > /home/ubuntu/.ssh/id_rsa
+    echo "YOUR_PRIVATE_KEY_HERE" > /home/ubuntu/.ssh/id_rsa
     chmod 600 /home/ubuntu/.ssh/id_rsa
     chown ubuntu:ubuntu /home/ubuntu/.ssh/id_rsa
   EOF
@@ -188,6 +188,7 @@ resource "aws_instance" "bastion" {
     Name = "Bastion Host"
   }
 }
+
 
 
 resource "aws_instance" "kafka_instance_1" {

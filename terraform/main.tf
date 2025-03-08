@@ -141,7 +141,7 @@ resource "aws_security_group" "private_sg" {
     to_port         = 22
     protocol        = "tcp"
     security_groups = [aws_security_group.bastion_sg.id]
-    cidr_blocks     = ["10.0.0.0/0"]
+    cidr_blocks     = ["0.0.0.0/0"]
   }
 
   # Allow Kafka traffic
@@ -150,7 +150,7 @@ resource "aws_security_group" "private_sg" {
     to_port     = 9092
     protocol    = "tcp"
     security_groups = [aws_security_group.bastion_sg.id]
-    cidr_blocks     = ["10.0.0.0/0"]
+    cidr_blocks     = ["0.0.0.0/0"]
   }
 
   # Allow Zookeeper traffic
@@ -159,7 +159,7 @@ resource "aws_security_group" "private_sg" {
     to_port     = 2181
     protocol    = "tcp"
     security_groups = [aws_security_group.bastion_sg.id]
-    cidr_blocks     = ["10.0.0.0/0"]
+    cidr_blocks     = ["0.0.0.0/0"]
   }
 
   # Allow all outbound traffic

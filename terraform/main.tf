@@ -175,28 +175,30 @@ resource "aws_instance" "bastion" {
   key_name               = "CommonKey"  
   subnet_id              = aws_subnet.public_subnet_1.id
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
+
+  tags = {   # ✅ Move tags here
+    Name = "Bastion Host"
+  }
+
   provisioner "file" {
-    source      = "/var/lib/jenkins/workspace/CommonKey.pem"  # ✅ Jenkins se key uthao
-    destination = "/home/ubuntu/CommonKey.pem"  # ✅ Bastion me rakho
+    source      = "/var/lib/jenkins/workspace/CommonKey.pem"
+    destination = "/home/ubuntu/CommonKey.pem"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "chmod 400 /home/ubuntu/CommonKey.pem"  # ✅ Permission set karo
+      "chmod 400 /home/ubuntu/CommonKey.pem"
     ]
   }
 
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = file("/var/lib/jenkins/workspace/CommonKey.pem")  # ✅ Jenkins ki key use karo
+    private_key = file("/var/lib/jenkins/workspace/CommonKey.pem")
     host        = self.public_ip
   }
 }
-  tags = {
-    Name = "Bastion Host"
-  }
-}
+
 
 
 

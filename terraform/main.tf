@@ -170,34 +170,23 @@ resource "aws_security_group" "private_sg" {
 
 # EC2 Instances
 resource "aws_instance" "bastion" {
-  ami                    = "ami-04b4f1a9cf54c11d0"  # Replace with your AMI ID
+  ami                    = "ami-04b4f1a9cf54c11d0"
   instance_type          = "t2.micro"
-  key_name               = "CommonKey"  
   subnet_id              = aws_subnet.public_subnet_1.id
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
-
+  
   user_data = <<-EOF
     #!/bin/bash
     mkdir -p /home/ubuntu/.ssh
-    echo "YOUR_PRIVATE_KEY_HERE" > /home/ubuntu/.ssh/id_rsa
+
+    # Generate SSH keypair dynamically
+    ssh-keygen -t rsa -b 2048 -f /home/ubuntu/.ssh/id_rsa -q -N ""
+
+    # Ensure correct permissions
+    chmod 700 /home/ubuntu/.ssh
     chmod 600 /home/ubuntu/.ssh/id_rsa
-    chown ubuntu:ubuntu /home/ubuntu/.ssh/id_rsa
-
-    # Configure SSH for private instances
-    echo "Host kafka-instance-1
-      HostName ${aws_instance.kafka_instance_1.private_ip}
-      User ubuntu
-      IdentityFile /home/ubuntu/.ssh/id_rsa
-      StrictHostKeyChecking no" >> /home/ubuntu/.ssh/config
-
-    echo "Host kafka-instance-2
-      HostName ${aws_instance.kafka_instance_2.private_ip}
-      User ubuntu
-      IdentityFile /home/ubuntu/.ssh/id_rsa
-      StrictHostKeyChecking no" >> /home/ubuntu/.ssh/config
-
-    chmod 600 /home/ubuntu/.ssh/config
-    chown ubuntu:ubuntu /home/ubuntu/.ssh/config
+    chmod 644 /home/ubuntu/.ssh/id_rsa.pub
+    chown -R ubuntu:ubuntu /home/ubuntu/.ssh
   EOF
 
   tags = {
@@ -205,7 +194,9 @@ resource "aws_instance" "bastion" {
   }
 }
 
-
+output "bastion_public_key" {
+  value = file("${path.module}/bastion_public_key.pub")
+}
 
 
 resource "aws_instance" "kafka_instance_1" {
@@ -213,7 +204,19 @@ resource "aws_instance" "kafka_instance_1" {
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.private_subnet_1.id
   vpc_security_group_ids = [aws_security_group.private_sg.id]
-  key_name               = "CommonKey"
+
+  user_data = <<-EOF
+    #!/bin/bash
+    mkdir -p /home/ubuntu/.ssh
+
+    # Bastion ka Public Key authorized_keys me daalna
+    echo "${file("${path.module}/bastion_public_key.pub")}" > /home/ubuntu/.ssh/authorized_keys
+
+    chmod 700 /home/ubuntu/.ssh
+    chmod 600 /home/ubuntu/.ssh/authorized_keys
+    chown -R ubuntu:ubuntu /home/ubuntu/.ssh
+  EOF
+
   tags = {
     Name = "kafka-instance-1"
     Role = "kafka"
@@ -225,12 +228,25 @@ resource "aws_instance" "kafka_instance_2" {
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.private_subnet_2.id
   vpc_security_group_ids = [aws_security_group.private_sg.id]
-  key_name               = "CommonKey"
+
+  user_data = <<-EOF
+    #!/bin/bash
+    mkdir -p /home/ubuntu/.ssh
+
+    # Bastion ka Public Key authorized_keys me daalna
+    echo "${file("${path.module}/bastion_public_key.pub")}" > /home/ubuntu/.ssh/authorized_keys
+
+    chmod 700 /home/ubuntu/.ssh
+    chmod 600 /home/ubuntu/.ssh/authorized_keys
+    chown -R ubuntu:ubuntu /home/ubuntu/.ssh
+  EOF
+
   tags = {
     Name = "kafka-instance-2"
     Role = "kafka"
   }
 }
+
 
 # Outputs for Ansible Dynamic Inventory
 output "bastion_public_ip" {

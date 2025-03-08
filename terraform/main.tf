@@ -178,6 +178,7 @@ resource "aws_instance" "bastion" {
 
   tags = {   # ✅ Move tags here
     Name = "Bastion Host"
+    Role = "kafka"
   }
 
   provisioner "file" {

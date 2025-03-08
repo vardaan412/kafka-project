@@ -5,9 +5,8 @@ regions:
 filters:
   tag:Role: kafka
 
+hostnames:
+  - private-ip-address
+
 compose:
   ansible_host: private_ip_address
-
-# Add vars to configure ProxyJump dynamically
-vars:
-  ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o ProxyJump=ubuntu@${BASTION_IP}"

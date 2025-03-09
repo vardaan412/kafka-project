@@ -170,6 +170,30 @@ resource "aws_security_group" "private_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+# VPC Peering
+resource "aws_vpc_peering_connection" "kafka_jenkins_peering" {
+  vpc_id      = aws_vpc.kafka_vpc.id
+  peer_vpc_id = "vpc-024bc9d9cadbcebc6"
+  auto_accept = true
+  tags = {
+    Name = "kafka-jenkins-peering"
+  }
+}
+
+# Route Table Updates
+resource "aws_route" "kafka_to_jenkins" {
+  route_table_id         = aws_route_table.private_rt.id
+  destination_cidr_block = "10.0.0.0/18"
+  vpc_peering_connection_id = aws_vpc_peering_connection.kafka_jenkins_peering.id
+  depends_on = [aws_vpc_peering_connection.kafka_jenkins_peering]
+}
+
+resource "aws_route" "jenkins_to_kafka" {
+  route_table_id         = "rtb-089c5460f2a2ebec6"
+  destination_cidr_block = "10.0.0.0/16"
+  vpc_peering_connection_id = aws_vpc_peering_connection.kafka_jenkins_peering.id
+  depends_on = [aws_vpc_peering_connection.kafka_jenkins_peering]
+}
 
 # EC2 Instances
 resource "aws_instance" "bastion" {
@@ -204,9 +228,6 @@ resource "aws_instance" "bastion" {
 }
 
 
-
-
-
 resource "aws_instance" "kafka_instance_1" {
   ami                    = "ami-04b4f1a9cf54c11d0"
   instance_type          = "t2.micro"
@@ -230,69 +251,3 @@ resource "aws_instance" "kafka_instance_2" {
     Role = "kafka"
   }
 }
-# VPC Peering Between Kafka VPC & Jenkins VPC
-resource "aws_vpc_peering_connection" "kafka_jenkins_peering" {
-  vpc_id      = aws_vpc.kafka_vpc.id
-  peer_vpc_id = "vpc-024bc9d9cadbcebc6" # Jenkins VPC ID
-  auto_accept = true
-
-  tags = {
-    Name = "kafka-jenkins-peering"
-  }
-}
-
-# Update Kafka VPC Route Table for Peering
-resource "aws_route" "kafka_to_jenkins" {
-  route_table_id         = aws_route_table.private_rt.id
-  destination_cidr_block = "10.0.0.0/18" # Jenkins VPC CIDR
-  vpc_peering_connection_id = aws_vpc_peering_connection.kafka_jenkins_peering.id
-}
-
-# Update Jenkins VPC Route Table for Peering (Assuming route table is known)
-resource "aws_route" "jenkins_to_kafka" {
-  route_table_id         = "rtb-089c5460f2a2ebec6"  # Jenkins Route Table ID (Replace with actual ID)
-  destination_cidr_block = "10.0.0.0/16" # Kafka VPC CIDR
-  vpc_peering_connection_id = aws_vpc_peering_connection.kafka_jenkins_peering.id
-}
-
-# Security Group Update to Allow Traffic Between VPCs
-# Security Group Update to Allow Traffic Between VPCs
-resource "aws_security_group_rule" "kafka_allow_jenkins" {
-  type              = "ingress"
-  from_port        = 9092
-  to_port          = 9092
-  protocol         = "tcp"
-  security_group_id = aws_security_group.private_sg.id
-  cidr_blocks      = ["10.0.0.0/18"]  # Allow traffic from Jenkins VPC
-}
-
-resource "aws_security_group_rule" "jenkins_allow_kafka" {
-  type              = "ingress"
-  from_port        = 22
-  to_port          = 22
-  protocol         = "tcp"
-  security_group_id = aws_security_group.bastion_sg.id
-  cidr_blocks      = ["10.0.0.0/18"]  # Allow SSH from Jenkins VPC
-}
-
-# Outbound rule to allow all traffic from private_sg
-resource "aws_security_group_rule" "private_sg_outbound" {
-  type              = "egress"
-  from_port        = 0
-  to_port          = 0
-  protocol         = "-1"
-  security_group_id = aws_security_group.private_sg.id
-  cidr_blocks      = ["0.0.0.0/0"]  # Allow all outbound traffic
-}
-
-# Outbound rule to allow all traffic from bastion_sg
-resource "aws_security_group_rule" "bastion_sg_outbound" {
-  type              = "egress"
-  from_port        = 0
-  to_port          = 0
-  protocol         = "-1"
-  security_group_id = aws_security_group.bastion_sg.id
-  cidr_blocks      = ["0.0.0.0/0"]  # Allow all outbound traffic
-}
-
-

@@ -230,10 +230,6 @@ resource "aws_instance" "kafka_instance_2" {
     Role = "kafka"
   }
 }
-provider "aws" {
-  region = "us-east-1"
-}
-
 # VPC Peering Between Kafka VPC & Jenkins VPC
 resource "aws_vpc_peering_connection" "kafka_jenkins_peering" {
   vpc_id      = aws_vpc.kafka_vpc.id

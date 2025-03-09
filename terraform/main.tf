@@ -4,7 +4,7 @@ provider "aws" {
 
 # VPC
 resource "aws_vpc" "kafka_vpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = "10.1.0.0/16"
   tags = {
     Name = "kafka-vpc"
   }
@@ -13,7 +13,7 @@ resource "aws_vpc" "kafka_vpc" {
 # Public Subnet
 resource "aws_subnet" "public_subnet_1" {
   vpc_id                  = aws_vpc.kafka_vpc.id
-  cidr_block              = "10.0.1.0/24"
+  cidr_block              = "10.1.1.0/24"
   map_public_ip_on_launch = true
   availability_zone       = "us-east-1a"
   tags = {
@@ -24,7 +24,7 @@ resource "aws_subnet" "public_subnet_1" {
 # Private Subnets
 resource "aws_subnet" "private_subnet_1" {
   vpc_id            = aws_vpc.kafka_vpc.id
-  cidr_block        = "10.0.3.0/24"
+  cidr_block        = "10.1.3.0/24"
   availability_zone = "us-east-1a"
   tags = {
     Name = "private-subnet-1"
@@ -33,7 +33,7 @@ resource "aws_subnet" "private_subnet_1" {
 
 resource "aws_subnet" "private_subnet_2" {
   vpc_id            = aws_vpc.kafka_vpc.id
-  cidr_block        = "10.0.4.0/24"
+  cidr_block        = "10.1.4.0/24"
   availability_zone = "us-east-1b"
   tags = {
     Name = "private-subnet-2"
@@ -190,7 +190,7 @@ resource "aws_route" "kafka_to_jenkins" {
 
 resource "aws_route" "jenkins_to_kafka" {
   route_table_id         = "rtb-089c5460f2a2ebec6"
-  destination_cidr_block = "10.0.0.0/16"
+  destination_cidr_block = "10.1.0.0/16"
   vpc_peering_connection_id = aws_vpc_peering_connection.kafka_jenkins_peering.id
   depends_on = [aws_vpc_peering_connection.kafka_jenkins_peering]
 }

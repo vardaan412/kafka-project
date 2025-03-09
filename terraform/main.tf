@@ -203,7 +203,7 @@ resource "aws_instance" "bastion" {
   subnet_id              = aws_subnet.public_subnet_1.id
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
 
-  tags = {   # ✅ Move tags here
+  tags = { 
     Name = "Bastion Host"
     Role = "kafka"
   }

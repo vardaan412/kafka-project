@@ -11,19 +11,31 @@
   user:
     name: "{{ kafka_user }}"
     comment: "Kafka Service Account"
-    shell: /bin/bash
+    shell: /bin/bash"
+    create_home: no
+  become: yes
+
+- name: Ensure Kafka install directory exists
+  file:
+    path: "{{ kafka_install_dir }}"
+    state: directory
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_group }}"
+    mode: "0755"
   become: yes
 
 - name: Download Kafka
   get_url:
     url: "{{ kafka_download_url }}"
     dest: "/tmp/kafka.tgz"
+    mode: "0644"
+    force: yes  # Ensures latest download
   become: yes
 
 - name: Extract Kafka
   unarchive:
     src: "/tmp/kafka.tgz"
-    dest: "/opt"
+    dest: "{{ kafka_install_dir }}"
     remote_src: yes
     extra_opts: [--strip-components=1]
   become: yes

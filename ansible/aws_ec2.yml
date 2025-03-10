@@ -10,7 +10,4 @@ hostnames:
 
 compose:
   ansible_host: private_ip_address
-
-# Add vars section
-hostvars:
-  ansible_python_interpreter: /usr/bin/python3.12
+  ansible_python_interpreter: "'/usr/bin/python3.12'"

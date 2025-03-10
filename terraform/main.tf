@@ -213,7 +213,7 @@ resource "aws_instance" "bastion" {
 
 resource "aws_instance" "kafka_instance_1" {
   ami                    = "ami-04b4f1a9cf54c11d0"
-  instance_type          = "t2.micro"
+  instance_type          = "t2.large"
   subnet_id              = aws_subnet.private_subnet_1.id
   vpc_security_group_ids = [aws_security_group.private_sg.id]
   key_name               = "CommonKey"
@@ -225,7 +225,7 @@ resource "aws_instance" "kafka_instance_1" {
 
 resource "aws_instance" "kafka_instance_2" {
   ami                    = "ami-04b4f1a9cf54c11d0"
-  instance_type          = "t2.micro"
+  instance_type          = "t2.large"
   subnet_id              = aws_subnet.private_subnet_2.id
   vpc_security_group_ids = [aws_security_group.private_sg.id]
   key_name               = "CommonKey"

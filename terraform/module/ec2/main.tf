@@ -7,7 +7,6 @@ resource "aws_instance" "bastion" {
 
   tags = {
     Name = "Bastion Host"
-    Role = "kafka"
   }
 
   provisioner "file" {

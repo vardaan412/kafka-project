@@ -40,12 +40,11 @@
     extra_opts: [--strip-components=1]
   become: yes
 
-- name: Set permissions for Kafka directory
+- name: Set correct permissions for Kafka logs
   file:
-    path: "{{ kafka_install_dir }}"
+    path: "{{ kafka_install_dir }}/logs"
     owner: "{{ kafka_user }}"
     group: "{{ kafka_group }}"
-    state: directory
     mode: "0755"
   become: yes
 

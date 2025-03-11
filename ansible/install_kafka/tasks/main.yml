@@ -30,8 +30,6 @@
     dest: "/tmp/kafka.tgz"
     mode: "0644"
   become: yes
-  args:
-    creates: "/tmp/kafka.tgz"
 
 
 - name: Extract Kafka

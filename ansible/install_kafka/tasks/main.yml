@@ -62,8 +62,9 @@
   debug:
     msg: "Kafka Cluster ID: {{ kafka_cluster_id }}, Kafka Data Dir: {{ kafka_data_dir | default('/var/lib/kafka') }}"
 
-- name: Generate a valid UUID for Kafka Cluster ID
-  shell: uuidgen
+- name: Generate a valid base64-encoded UUID for Kafka Cluster ID
+  shell: |
+    python3 -c 'import uuid, base64; uuid_bytes = uuid.uuid4().bytes; print(base64.urlsafe_b64encode(uuid_bytes).decode().rstrip("="))'
   register: uuid_result
   changed_when: false
 

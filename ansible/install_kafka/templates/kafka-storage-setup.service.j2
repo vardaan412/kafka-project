@@ -1,0 +1,12 @@
+[Unit]
+Description=Kafka Storage Setup
+Before=kafka.service
+
+[Service]
+Type=oneshot
+User={{ kafka_user }}
+ExecStart={{ kafka_install_dir }}/bin/kafka-storage.sh format --config {{ kafka_install_dir }}/config/kraft/server.properties --cluster-id {{ kafka_cluster_id }}
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target

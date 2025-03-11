@@ -3,3 +3,5 @@
     name: kafka
     state: restarted
   become: yes
+- name: Reload systemd
+  command: systemctl daemon-reload

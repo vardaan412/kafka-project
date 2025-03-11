@@ -57,12 +57,13 @@
   become: yes
   notify: Restart Kafka
 
-- name: Format Kafka Storage for Kraft Mode
+- name: Format Kafka Storage for KRaft Mode
   command: "{{ kafka_install_dir }}/bin/kafka-storage.sh format -t {{ kafka_cluster_id }} -c {{ kafka_install_dir }}/config/server.properties"
   become: yes
   become_user: "{{ kafka_user }}"
   args:
-    creates: "{{ kafka_install_dir }}/logs/meta.properties"
+    creates: "{{ kafka_data_dir }}/meta.properties"
+
 
 - name: Configure systemd service for Kafka
   template:

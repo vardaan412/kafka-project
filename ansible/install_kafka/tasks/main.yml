@@ -37,11 +37,12 @@
     src: "/tmp/kafka.tgz"
     dest: "/opt/kafka"
     remote_src: yes
-    extra_opts: [--strip-components=1]
-    mode: '0755'
+    extra_opts: [--strip-components=1]  # Removes the top-level directory from extraction
     owner: kafka
     group: kafka
-    force: yes  # Overwrite if partially installed
+    mode: '0755'
+    creates: "/opt/kafka/bin/kafka-storage.sh"  # Prevents re-extracting if Kafka is already installed
+
 
 - name: Change ownership of Kafka directory
   file:

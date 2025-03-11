@@ -37,11 +37,11 @@
     src: "/tmp/kafka.tgz"
     dest: "/opt/kafka"
     remote_src: yes
-    extra_opts: [--strip-components=1]  # Removes the top-level directory from extraction
+    extra_opts: [--strip-components=1]
     owner: kafka
     group: kafka
     mode: '0755'
-    creates: "/opt/kafka/bin/kafka-storage.sh"  # Prevents re-extracting if Kafka is already installed
+    creates: "/opt/kafka/bin/kafka-storage.sh" 
 
 
 - name: Change ownership of Kafka directory
@@ -64,38 +64,6 @@
     - "{{ kafka_data_dir }}"
     - "{{ kafka_log_dir }}"
   become: yes
-
-- name: Create Kafka data and log directories
-  file:
-    path: "{{ item }}"
-    state: directory
-    owner: "{{ kafka_user }}"
-    group: "{{ kafka_group }}"
-    mode: '0755'
-  loop:
-    - "{{ kafka_data_dir }}"
-    - "{{ kafka_log_dir }}"
-  become: yes
-
-- name: Deploy Kafka Storage Setup systemd service
-  template:
-    src: "kafka-storage-setup.service.j2"
-    dest: "/etc/systemd/system/kafka-storage-setup.service"
-  become: yes
-  notify: Reload systemd
-
-- name: Reload systemd to apply changes
-  command: systemctl daemon-reexec
-  become: yes
-
-- name: Enable and Start Kafka Storage Setup Service
-  systemd:
-    name: kafka-storage-setup
-    enabled: yes
-    state: restarted
-    daemon_reload: yes
-  become: yes
-  
 - name: Ensure Kafka scripts are executable
   file:
     path: "{{ kafka_install_dir }}/bin/kafka-storage.sh"

@@ -67,7 +67,8 @@
   become: yes
   become_user: "{{ kafka_user }}"
   args:
-    creates: "{{ kafka_data_dir }}/meta.properties"
+    creates: "{{ kafka_data_dir | default('/var/lib/kafka') }}/meta.properties"
+
     
 - name: Configure systemd service for Kafka
   template:

@@ -59,6 +59,11 @@
     - "{{ kafka_log_dir }}"
   become: yes
 
+- name: Ensure Kafka is installed
+  stat:
+    path: /opt/kafka/bin/kafka-storage.sh
+  register: kafka_storage_script
+  
 - name: Generate Kafka Cluster ID (if not set)
   shell: "{{ kafka_install_dir }}/bin/kafka-storage.sh random-uuid"
   register: cluster_id

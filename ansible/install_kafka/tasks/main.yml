@@ -84,11 +84,16 @@
   become: yes
   notify: Reload systemd
 
+- name: Reload systemd to apply changes
+  command: systemctl daemon-reexec
+  become: yes
+
 - name: Enable and Start Kafka Storage Setup Service
   systemd:
     name: kafka-storage-setup
     enabled: yes
-    state: started
+    state: restarted
+    daemon_reload: yes
   become: yes
   
 - name: Ensure Kafka scripts are executable

@@ -1,8 +1,8 @@
 process.roles=controller,broker
 node.id={{ kafka_node_id }}
-controller.quorum.voters={{ kafka_node_id }}@localhost:9093
+controller.quorum.voters={{ kafka_node_id }}@{{ ansible_default_ipv4.address }}:9093
 log.dirs={{ kafka_data_dir }}
-listeners=PLAINTEXT://0.0.0.0:{{ kafka_port }},CONTROLLER://0.0.0.0:9093
+listeners=PLAINTEXT://{{ ansible_default_ipv4.address }}:{{ kafka_port }},CONTROLLER://{{ ansible_default_ipv4.address }}:9093
 advertised.listeners=PLAINTEXT://{{ ansible_default_ipv4.address }}:{{ kafka_port }}
 listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
 controller.listener.names=CONTROLLER

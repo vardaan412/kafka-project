@@ -1,13 +1,13 @@
 [Unit]
-Description=Apache Kafka (Kraft Mode)
+Description=Apache Kafka (KRaft Mode)
 After=network.target
 
 [Service]
-User=kafka
-Group=kafka
-ExecStart=/opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/server.properties
-ExecStop=/opt/kafka/bin/kafka-server-stop.sh
-Restart=on-abnormal
+User={{ kafka_user }}
+Group={{ kafka_group }}
+ExecStart={{ kafka_install_dir }}/bin/kafka-server-start.sh {{ kafka_install_dir }}/config/kraft/server.properties
+ExecStop={{ kafka_install_dir }}/bin/kafka-server-stop.sh
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target

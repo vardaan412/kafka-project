@@ -4,4 +4,4 @@ kafka_download_url: "https://archive.apache.org/dist/kafka/{{ kafka_version }}/k
 kafka_install_dir: "/opt/kafka"
 kafka_user: "kafka"
 kafka_group: "kafka"
-# kafka_cluster_id: "my-cluster-12345"
+kafka_cluster_id: "my-cluster-12345"

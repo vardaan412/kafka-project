@@ -1,9 +1,3 @@
-- name: Restart Zookeeper
-  systemd:
-    name: zookeeper
-    state: restarted
-  become: yes
-
 - name: Restart Kafka
   systemd:
     name: kafka

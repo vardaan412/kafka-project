@@ -40,13 +40,15 @@
     extra_opts: [--strip-components=1]
   become: yes
 
-- name: Set correct permissions for Kafka logs
+- name: Ensure Kafka logs directory exists
   file:
     path: "{{ kafka_install_dir }}/logs"
+    state: directory
     owner: "{{ kafka_user }}"
     group: "{{ kafka_group }}"
     mode: "0755"
   become: yes
+
 
 - name: Configure Kafka for Kraft mode
   template:

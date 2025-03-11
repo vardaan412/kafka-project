@@ -11,7 +11,7 @@
   user:
     name: "{{ kafka_user }}"
     comment: "Kafka Service Account"
-    shell: /bin/bash"
+    shell: /bin/bash
     create_home: no
   become: yes
 
@@ -29,7 +29,7 @@
     url: "{{ kafka_download_url }}"
     dest: "/tmp/kafka.tgz"
     mode: "0644"
-    force: yes  # Ensures latest download
+    force: yes
   become: yes
 
 - name: Extract Kafka
@@ -49,12 +49,19 @@
     mode: "0755"
   become: yes
 
-- name: Configure systemd service for Zookeeper
+- name: Configure Kafka for Kraft mode
   template:
-    src: "zookeeper.service.j2"
-    dest: "/etc/systemd/system/zookeeper.service"
+    src: "server.properties.j2"
+    dest: "{{ kafka_install_dir }}/config/server.properties"
   become: yes
-  notify: Restart Zookeeper
+  notify: Restart Kafka
+
+- name: Format Kafka Storage for Kraft Mode
+  command: "{{ kafka_install_dir }}/bin/kafka-storage.sh format -t {{ kafka_cluster_id }} -c {{ kafka_install_dir }}/config/server.properties"
+  become: yes
+  become_user: "{{ kafka_user }}"
+  args:
+    creates: "{{ kafka_install_dir }}/logs/meta.properties"
 
 - name: Configure systemd service for Kafka
   template:
@@ -62,13 +69,6 @@
     dest: "/etc/systemd/system/kafka.service"
   become: yes
   notify: Restart Kafka
-
-- name: Start and enable Zookeeper
-  systemd:
-    name: zookeeper
-    enabled: yes
-    state: started
-  become: yes
 
 - name: Start and enable Kafka
   systemd:

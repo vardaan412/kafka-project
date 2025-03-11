@@ -37,6 +37,11 @@
     src: "/tmp/kafka.tgz"
     dest: "/opt/kafka"
     remote_src: yes
+    extra_opts: [--strip-components=1]
+    mode: '0755'
+    owner: kafka
+    group: kafka
+    force: yes  # Overwrite if partially installed
 
 - name: Change ownership of Kafka directory
   file:
@@ -58,6 +63,10 @@
     - "{{ kafka_data_dir }}"
     - "{{ kafka_log_dir }}"
   become: yes
+- name: Ensure Kafka scripts are executable
+  file:
+    path: "{{ kafka_install_dir }}/bin/kafka-storage.sh"
+    mode: '0755'
 
 - name: Ensure Kafka is installed
   stat:

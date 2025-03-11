@@ -62,6 +62,15 @@
   debug:
     msg: "Kafka Cluster ID: {{ kafka_cluster_id }}, Kafka Data Dir: {{ kafka_data_dir | default('/var/lib/kafka') }}"
 
+- name: Generate a valid UUID for Kafka Cluster ID
+  shell: uuidgen
+  register: uuid_result
+  changed_when: false
+
+- name: Set Kafka Cluster ID
+  set_fact:
+    kafka_cluster_id: "{{ uuid_result.stdout }}"
+
 - name: Format Kafka Storage for KRaft Mode
   command: "{{ kafka_install_dir }}/bin/kafka-storage.sh format -t {{ kafka_cluster_id }} -c {{ kafka_install_dir }}/config/server.properties"
   become: yes

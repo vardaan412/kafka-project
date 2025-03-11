@@ -62,23 +62,33 @@
   debug:
     msg: "Kafka Cluster ID: {{ kafka_cluster_id }}, Kafka Data Dir: {{ kafka_data_dir | default('/var/lib/kafka') }}"
 
-- name: Generate a valid base64-encoded UUID for Kafka Cluster ID
+- name: Generate a valid UUID for Kafka Cluster ID
   shell: |
-    python3 -c 'import uuid, base64; uuid_bytes = uuid.uuid4().bytes; print(base64.urlsafe_b64encode(uuid_bytes).decode().rstrip("="))'
+    cat /proc/sys/kernel/random/uuid
   register: uuid_result
   changed_when: false
+
 
 - name: Set Kafka Cluster ID
   set_fact:
     kafka_cluster_id: "{{ uuid_result.stdout }}"
 
+- name: Ensure Kafka data directory exists
+  file:
+    path: "{{ kafka_data_dir | default('/var/lib/kafka') }}"
+    state: directory
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_group }}"
+    mode: "0755"
+  become: yes
+
 - name: Format Kafka Storage for KRaft Mode
   command: "{{ kafka_install_dir }}/bin/kafka-storage.sh format -t {{ kafka_cluster_id }} -c {{ kafka_install_dir }}/config/server.properties"
   become: yes
   become_user: "{{ kafka_user }}"
-  become_flags: "-H -S -n"
   args:
-    creates: "{{ kafka_data_dir | default('/var/lib/kafka') }}/meta.properties"
+    removes: "{{ kafka_data_dir | default('/var/lib/kafka') }}/meta.properties"
+
 
     
 - name: Configure systemd service for Kafka

@@ -46,7 +46,7 @@ pipeline {
                     mimeType: 'text/html',
                     subject: "✅ Jenkins Job SUCCESS: ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
                     body: emailBody,
-                    recipientProviders: [[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']]
+                    to: 'saxenavardaan18@gmail.com'
                 )
             }
         }
@@ -70,7 +70,7 @@ pipeline {
                     mimeType: 'text/html',
                     subject: "❌ Jenkins Job FAILED: ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
                     body: emailBody,
-                    recipientProviders: [[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']]
+                    to: 'saxenavardaan18@gmail.com'
                 )
             }
         }

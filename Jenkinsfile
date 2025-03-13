@@ -46,6 +46,7 @@ pipeline {
                     mimeType: 'text/html',
                     subject: "✅ Jenkins Job SUCCESS: ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
                     body: emailBody,
+                    from: '${DEFAULT_REPLYTO}',
                     recipientProviders: [[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']]
                 )
             }
@@ -70,6 +71,7 @@ pipeline {
                     mimeType: 'text/html',
                     subject: "❌ Jenkins Job FAILED: ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
                     body: emailBody,
+                    from: '${DEFAULT_REPLYTO}',
                     recipientProviders: [[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']]
                 )
             }

@@ -47,7 +47,7 @@ pipeline {
                     mimeType: 'text/html',
                     subject: "✅ SUCCESS: ${env.JOB_NAME} (Build #${env.BUILD_NUMBER})",
                     body: emailBody,
-                    to: 'your-email@example.com' // Replace with actual recipient email
+                    to: 'saxenavardaan18@gmail.com' // Replace with actual recipient email
                 )
             }
         }
@@ -72,7 +72,7 @@ pipeline {
                     mimeType: 'text/html',
                     subject: "❌ FAILED: ${env.JOB_NAME} (Build #${env.BUILD_NUMBER})",
                     body: emailBody,
-                    to: 'your-email@example.com' // Replace with actual recipient email
+                    to: 'saxenavardaan18@gmail.com' // Replace with actual recipient email
                 )
             }
         }

@@ -20,7 +20,7 @@ pipeline {
                             description: 'Choose whether to build or destroy infrastructure'
                         )
                     ]
-                    env.USER_ACTION = userChoices
+                    env.USER_ACTION = userChoice
                 }
             }
         }

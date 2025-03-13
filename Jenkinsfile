@@ -25,15 +25,6 @@ pipeline {
             }
         }
 
-        stage('Fail Intentionally') {
-            steps {
-                script {
-                    error "Forcing failure to trigger failure email!"
-                }
-            }
-        }
-    }
-
     post {
         success {
             script {

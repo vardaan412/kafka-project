@@ -132,8 +132,8 @@ pipeline {
                     <div style="max-width: 600px; margin: auto; background-color: #d4edda; padding: 20px; border-left: 5px solid #28a745; border-radius: 5px;">
                         <h2 style="color: #155724;">✅ Jenkins Job SUCCESS</h2>
                         <p style="color: #155724; font-size: 16px;">
-                            <strong>Job Name:</strong> ${env.JOB_NAME} <br>
-                            <strong>Build No:</strong> ${env.BUILD_NUMBER}
+                            <strong>Job Name:</strong><b> ${env.JOB_NAME}</b> <br>
+                            <strong>Build No:</strong><b> ${env.BUILD_NUMBER}</b>
                         </p>
                         <p style="font-size: 14px;">The job has completed successfully. 🎉</p>
                     </div>
@@ -157,8 +157,8 @@ pipeline {
                     <div style="max-width: 600px; margin: auto; background-color: #f8d7da; padding: 20px; border-left: 5px solid #dc3545; border-radius: 5px;">
                         <h2 style="color: #721c24;">❌ Jenkins Job FAILED</h2>
                         <p style="color: #721c24; font-size: 16px;">
-                            <strong>Job Name:</strong> ${env.JOB_NAME} <br>
-                            <strong>Build No:</strong> ${env.BUILD_NUMBER}
+                            <strong>Job Name:</strong><b> ${env.JOB_NAME}</b> <br>
+                            <strong>Build No:</strong><b> ${env.BUILD_NUMBER}</b>
                         </p>
                         <p style="font-size: 14px;">Please check the Jenkins console logs for more details.</p>
                     </div>

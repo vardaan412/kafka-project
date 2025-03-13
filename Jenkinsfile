@@ -54,7 +54,7 @@ pipeline {
 
         failure {
             script {
-                def emailBody = """
+                deef emailBody = """
                 <html>
                 <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
                     <div style="max-width: 600px; margin: auto; background-color: #f8d7da; padding: 20px; border-left: 5px solid #dc3545; border-radius: 5px;">
@@ -77,4 +77,4 @@ pipeline {
             }
         }
     }
-
+}

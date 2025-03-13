@@ -29,10 +29,13 @@ pipeline {
                 subject: "✅ Jenkins Job SUCCESS", 
                 body: """
                     <html>
-                        <body style="font-family:Arial, sans-serif; background-color:#e3fcef; padding:20px;">
-                            <div style="max-width:600px; background:white; padding:20px; border-radius:8px; box-shadow:0px 0px 10px rgba(0,0,0,0.1); text-align:center;">
-                                <h1 style="color:#28a745;">✅ SUCCESS</h1>
+                        <body style="font-family:Arial, sans-serif; background-color:#f4f4f4; padding:20px;">
+                            <div style="max-width:600px; margin:auto; background:white; padding:20px; border-radius:10px; box-shadow:0px 4px 10px rgba(0,0,0,0.1); text-align:center;">
+                                <img src='https://i.imgur.com/FYHbPvx.png' style='width:100px;'/>
+                                <h1 style="color:#28a745;">🎉 SUCCESS!</h1>
                                 <p style="font-size:18px; color:#333;">The Jenkins job has been successfully completed.</p>
+                                <hr style="border:1px solid #ddd;">
+                                <p style="color:#666;">Thank you for using Jenkins.</p>
                             </div>
                         </body>
                     </html>
@@ -47,10 +50,13 @@ pipeline {
                 subject: "❌ Jenkins Job FAILED", 
                 body: """
                     <html>
-                        <body style="font-family:Arial, sans-serif; background-color:#fdecea; padding:20px;">
-                            <div style="max-width:600px; background:white; padding:20px; border-radius:8px; box-shadow:0px 0px 10px rgba(0,0,0,0.1); text-align:center;">
-                                <h1 style="color:#dc3545;">❌ FAILED</h1>
+                        <body style="font-family:Arial, sans-serif; background-color:#f4f4f4; padding:20px;">
+                            <div style="max-width:600px; margin:auto; background:white; padding:20px; border-radius:10px; box-shadow:0px 4px 10px rgba(0,0,0,0.1); text-align:center;">
+                                <img src='https://i.imgur.com/ZYJ7P4R.png' style='width:100px;'/>
+                                <h1 style="color:#dc3545;">⚠️ FAILED!</h1>
                                 <p style="font-size:18px; color:#333;">The Jenkins job has failed.</p>
+                                <hr style="border:1px solid #ddd;">
+                                <p style="color:#666;">Please check the Jenkins console for details.</p>
                             </div>
                         </body>
                     </html>

@@ -20,7 +20,7 @@ pipeline {
                             description: 'Choose whether to build or destroy infrastructure'
                         )
                     ]
-                    env.USER_ACTION = userChoice
+                    env.USER_ACTION = userChoices
                 }
             }
         }
@@ -52,8 +52,8 @@ pipeline {
             }
         }
 
-        failuressssss {{}{}
-            scriptssssss {
+        failures {
+            scripts {
                 deef emailBody = """
                 <html>
                 <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">

@@ -24,6 +24,14 @@ pipeline {
                 }
             }
         }
+
+        stage('Fail Intentionally') {
+            steps {
+                script {
+                    error "Forcing failure to trigger failure email!"
+                }
+            }
+        }
     }
 
     post {
@@ -47,12 +55,12 @@ pipeline {
                     mimeType: 'text/html',
                     subject: "✅ SUCCESS: ${env.JOB_NAME} (Build #${env.BUILD_NUMBER})",
                     body: emailBody,
-                    to: 'saxenavardaan18@gmail.com' // Replace with actual recipient email
+                    to: 'saxenavardaan18@gmail.com'
                 )
             }
         }
 
-        failures {
+        failure {
             script {
                 def emailBody = """
                 <html>
@@ -72,7 +80,7 @@ pipeline {
                     mimeType: 'text/html',
                     subject: "❌ FAILED: ${env.JOB_NAME} (Build #${env.BUILD_NUMBER})",
                     body: emailBody,
-                    to: 'saxenavardaan18@gmail.com' // Replace with actual recipient email
+                    to: 'saxenavardaan18@gmail.com'
                 )
             }
         }

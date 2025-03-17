@@ -1,18 +1,120 @@
 ---
-- name: Install JDK
+- name: Install required dependencies (Java)
   apt:
     name: openjdk-11-jdk
     state: present
   become: yes
 
+- name: Create Kafka group
+  group:
+    name: "{{ kafka_group }}"
+    state: present
+  become: yes
+
+- name: Create Kafka user
+  user:
+    name: "{{ kafka_user }}"
+    group: "{{ kafka_group }}"
+    create_home: no
+    shell: /bin/bash
+  become: yes
+
 - name: Download Kafka
   get_url:
     url: "https://downloads.apache.org/kafka/{{ kafka_version }}/kafka_{{ scala_version }}-{{ kafka_version }}.tgz"
-    dest: "/home/ubuntu/kafka.tgz"
+    dest: "/tmp/kafka.tgz"
+
+- name: Ensure Kafka directory exists
+  file:
+    path: /opt/kafka
+    state: directory
+    owner: kafka
+    group: kafka
+    mode: '0755'
 
 - name: Extract Kafka
   unarchive:
-    src: "/home/ubuntu/kafka.tgz"
-    dest: "/home/ubuntu"
+    src: "/tmp/kafka.tgz"
+    dest: "/opt/kafka"
     remote_src: yes
     extra_opts: [--strip-components=1]
+    owner: kafka
+    group: kafka
+    mode: '0755'
+    creates: "/opt/kafka/bin/kafka-storage.sh" 
+
+
+- name: Change ownership of Kafka directory
+  file:
+    path: "{{ kafka_install_dir }}"
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_group }}"
+    mode: '0755'
+    recurse: yes
+  become: yes
+
+- name: Create Kafka data and log directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_group }}"
+    mode: '0755'
+  loop:
+    - "{{ kafka_data_dir }}"
+    - "{{ kafka_log_dir }}"
+  become: yes
+- name: Ensure Kafka scripts are executable
+  file:
+    path: "{{ kafka_install_dir }}/bin/kafka-storage.sh"
+    mode: '0755'
+
+- name: Ensure Kafka is installed
+  stat:
+    path: /opt/kafka/bin/kafka-storage.sh
+  register: kafka_storage_script
+  
+# Updated UUID generation and storage formatting tasks
+- name: Generate UUID for Kafka storage
+  command: cat /proc/sys/kernel/random/uuid
+  register: kafka_uuid
+  changed_when: false
+
+- name: Set Kafka Cluster ID
+  set_fact:
+    kafka_cluster_id: "{{ kafka_uuid.stdout }}"
+
+- name: Format Storage for KRaft
+  command: >
+    {{ kafka_install_dir }}/bin/kafka-storage.sh format
+    --config {{ kafka_install_dir }}/config/kraft/server.properties
+    --cluster-id {{ kafka_cluster_id }}
+  become: yes
+  become_user: "{{ kafka_user }}"
+  args:
+    creates: "{{ kafka_data_dir }}/meta.properties"
+
+- name: Configure Kafka for KRaft Mode
+  template:
+    src: "server.properties.j2"
+    dest: "{{ kafka_install_dir }}/config/kraft/server.properties"
+  become: yes
+  notify: Restart Kafka
+
+- name: Configure Kafka systemd service
+  template:
+    src: "kafka.service.j2"
+    dest: "/etc/systemd/system/kafka.service"
+  become: yes
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+  become: yes
+
+- name: Enable and start Kafka service
+  systemd:
+    name: kafka
+    state: started
+    enabled: yes
+  become: yes

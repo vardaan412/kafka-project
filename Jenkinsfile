@@ -13,10 +13,9 @@ pipeline {
         stage('User Input') {
             steps {
                 script {
-                    def userChoice = input message: 'Select Action:', parameters: [
+                    env.USER_ACTION = input message: 'Select Action:', parameters: [
                         choice(name: 'ACTION', choices: ['Build', 'Destroy'], description: 'Choose whether to build or destroy infrastructure')
                     ]
-                    env.USER_ACTION = userChoice
                 }
             }
         }
@@ -135,62 +134,63 @@ pipeline {
         }
     }
 
-post {
-    success {
-        script {
-            def emailBody = """
-            <html>
-                <body style="font-family: Arial, sans-serif; background-color: #F4F4F4; padding: 20px;">
-                    <div style="max-width: 600px; margin: auto; background-color: #D4EDDA; padding: 20px; border-left: 5px solid #28A745; border-radius: 5px;">
-                        <h2 style="color: #155724;">✅ Jenkins Job SUCCESS</h2>
-                        <p style="color: #155724; font-size: 16px;">
-                            <strong>Job Name:</strong><b> ${env.JOB_NAME}</b> <br>
-                            <strong>Build No:</strong><b> ${env.BUILD_NUMBER}</b><br>
-                            <strong><b>Triggered By:</strong> ${currentBuild.getBuildCauses().shortDescription}</b>
-                        </p>
-                        <p style="color: #155724; font-size: 16px;">The job has completed successfully. 🎉</p>
-                        <p style="color: #155724; font-size: 16px;"><strong>Check logs here:</strong>
-                            <a href="${env.BUILD_URL}" style="color: #155724; font-weight: bold;">${env.BUILD_URL}</a>
-                        </p>
-                    </div>
-                </body>
-            </html>
-            """
-            emailext(
-                mimeType: 'text/html',
-                subject: "✅ SUCCESS: ${env.JOB_NAME} (Build #${env.BUILD_NUMBER})",
-                body: emailBody,
-                to: 'saxenavardaan18@gmail.com'
-            )
+    post {
+        success {
+            script {
+                def emailBody = """
+                <html>
+                    <body style="font-family: Arial, sans-serif; background-color: #F4F4F4; padding: 20px;">
+                        <div style="max-width: 600px; margin: auto; background-color: #D4EDDA; padding: 20px; border-left: 5px solid #28A745; border-radius: 5px;">
+                            <h2 style="color: #155724;">✅ Jenkins Job SUCCESS</h2>
+                            <p style="color: #155724; font-size: 16px;">
+                                <strong>Job Name:</strong> ${env.JOB_NAME} <br>
+                                <strong>Build No:</strong> ${env.BUILD_NUMBER} <br>
+                                <strong>Triggered By:</strong> ${currentBuild.getBuildCauses().shortDescription}
+                            </p>
+                            <p style="color: #155724; font-size: 16px;">The job has completed successfully. 🎉</p>
+                            <p style="color: #155724; font-size: 16px;"><strong>Check logs here:</strong>
+                                <a href="${env.BUILD_URL}" style="color: #155724; font-weight: bold;">${env.BUILD_URL}</a>
+                            </p>
+                        </div>
+                    </body>
+                </html>
+                """
+                emailext(
+                    mimeType: 'text/html',
+                    subject: "✅ SUCCESS: ${env.JOB_NAME} (Build #${env.BUILD_NUMBER})",
+                    body: emailBody,
+                    to: 'saxenavardaan18@gmail.com'
+                )
+            }
         }
-    }
 
-    failure {
-        script {
-            def emailBody = """
-            <html>
-                <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
-                    <div style="max-width: 600px; margin: auto; background-color: #f8d7da; padding: 20px; border-left: 5px solid #dc3545; border-radius: 5px;">
-                        <h2 style="color: #721c24;">❌ Jenkins Job FAILED</h2>
-                        <p style="color: #721c24; font-size: 16px;">
-                            <strong>Job Name:</strong><b> ${env.JOB_NAME}</b> <br>
-                            <strong>Build No:</strong><b> ${env.BUILD_NUMBER}</b><br>
-                            <strong><b>Triggered By:</strong> ${currentBuild.getBuildCauses().shortDescription}</b>
-                        </p>
-                        <p style="color: #721c24; font-size: 16px; font-weight: bold;">The job has failed. ❌</p>
-                         <p style="color: #721c24; font-size: 16px;"><strong>Check logs here:</strong> 
-                            <a href="${env.BUILD_URL}" style="color: #721c24; font-weight: bold;">${env.BUILD_URL}</a>
-                        </p>
-                    </div>
-                </body>
-            </html>
-            """
-            emailext(
-                mimeType: 'text/html',
-                subject: "❌ FAILED: ${env.JOB_NAME} (Build #${env.BUILD_NUMBER})",
-                body: emailBody,
-                to: 'saxenavardaan18@gmail.com'
-            )
+        failure {
+            script {
+                def emailBody = """
+                <html>
+                    <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+                        <div style="max-width: 600px; margin: auto; background-color: #f8d7da; padding: 20px; border-left: 5px solid #dc3545; border-radius: 5px;">
+                            <h2 style="color: #721c24;">❌ Jenkins Job FAILED</h2>
+                            <p style="color: #721c24; font-size: 16px;">
+                                <strong>Job Name:</strong> ${env.JOB_NAME} <br>
+                                <strong>Build No:</strong> ${env.BUILD_NUMBER} <br>
+                                <strong>Triggered By:</strong> ${currentBuild.getBuildCauses().shortDescription}
+                            </p>
+                            <p style="color: #721c24; font-size: 16px; font-weight: bold;">The job has failed. ❌</p>
+                            <p style="color: #721c24; font-size: 16px;"><strong>Check logs here:</strong> 
+                                <a href="${env.BUILD_URL}" style="color: #721c24; font-weight: bold;">${env.BUILD_URL}</a>
+                            </p>
+                        </div>
+                    </body>
+                </html>
+                """
+                emailext(
+                    mimeType: 'text/html',
+                    subject: "❌ FAILED: ${env.JOB_NAME} (Build #${env.BUILD_NUMBER})",
+                    body: emailBody,
+                    to: 'saxenavardaan18@gmail.com'
+                )
+            }
         }
     }
 }

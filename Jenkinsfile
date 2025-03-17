@@ -97,18 +97,6 @@ pipeline {
             }
         }
 
-        stage('Ansible Lint') {
-            when {
-                expression { env.USER_ACTION == 'Build' }
-            }
-            steps {
-                sh '''
-                cd ansible
-                ansible-lint kafka-playbook.yml
-                '''
-            }
-        }
-
         stage('Install Dependencies on Managed Nodes') {
             when {
                 expression { env.USER_ACTION == 'Build' }

@@ -6,7 +6,7 @@ pipeline {
         TF_WORKING_DIR = 'terraform'
         TF_STATE_FILE = 'terraform/terraform.tfstate'
         ANSIBLE_HOST_KEY_CHECKING = 'False'
-        PATH = "/home/ubuntu/.local/bin:$PATH"
+       // PATH = "/home/ubuntu/.local/bin:$PATH"
     }
 
     stages {
@@ -109,17 +109,7 @@ pipeline {
             }
         }
 
-        stage('Run Ansible Playbook') {
-            when {
-                expression { env.USER_ACTION == 'Build' }
-            }
-            steps {
-                sh '''
-                cd ansible
-                ansible-playbook -i aws_ec2.yml kafka-playbook.yml
-                '''
-            }
-        }
+       
     }
 
     post {

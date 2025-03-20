@@ -148,7 +148,7 @@ pipeline {
                             </p>
                             <p style="color: #155724; font-size: 16px;">The job has completed successfully. 🎉</p>
                             <p style="color: #155724; font-size: 16px;"><strong>Check logs here:</strong>
-                                <a href="${env.BUILD_URL}" style="color:#155724; text-decoration:none; font-weight:bold;">View Build Logs</a>
+                                <a href="${env.BUILD_URL}" style="color:#155724; text-decoration:none; font-weight:bold;">Click Here To View Build Logs</a>
                             </p>
                         </div>
                     </body>
@@ -177,7 +177,7 @@ pipeline {
                             </p>
                             <p style="color: #721c24; font-size: 16px; font-weight: bold;">The job has failed. ❌</p>
                             <p style="color: #721c24; font-size: 16px;"><strong>Check logs here:</strong> 
-                                <a href="${env.BUILD_URL}" style="color:#155724; text-decoration:none; font-weight:bold;">View Build Logs</a>
+                                <a href="${env.BUILD_URL}" style="color:#155724; text-decoration:none; font-weight:bold;">Click Here To View Build Logs</a>
                             </p>
                         </div>
                     </body>

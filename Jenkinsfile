@@ -6,7 +6,7 @@ pipeline {
         TF_WORKING_DIR = 'terraform'
         TF_STATE_FILE = 'terraform/terraform.tfstate'
         ANSIBLE_HOST_KEY_CHECKING = 'False'
-       // PATH = "/home/ubuntu/.local/bin:$PATH"
+        INSTALL_ACTION = ''
     }
 
     stages {
@@ -72,21 +72,32 @@ pipeline {
             }
         }
 
-        stage('Wait for Instances (if Build)') {
+        stage('Post-Destroy User Prompt') {
             when {
                 expression { env.USER_ACTION == 'Build' }
             }
             steps {
                 script {
-                    echo "⏳ Waiting for EC2 instances to be ready..."
-                    sleep(time: 60, unit: 'SECONDS')
+                    env.INSTALL_ACTION = input message: 'Infrastructure built successfully. Choose to install or skip.', parameters: [
+                        choice(name: 'INSTALL', choices: ['Install', 'Skip'], description: 'Install Kafka or Skip')
+                    ]
                 }
+            }
+        }
+
+        stage('Wait for Instances (if Install)') {
+            when {
+                expression { env.INSTALL_ACTION && env.INSTALL_ACTION == 'Install' }
+            }
+            steps {
+                echo "⏳ Waiting for EC2 instances to be ready..."
+                sleep(time: 60, unit: 'SECONDS')
             }
         }
 
         stage('Check Ansible Inventory') {
             when {
-                expression { env.USER_ACTION == 'Build' }
+                expression { env.INSTALL_ACTION && env.INSTALL_ACTION == 'Install' }
             }
             steps {
                 sh '''
@@ -99,7 +110,7 @@ pipeline {
 
         stage('Install Dependencies on Managed Nodes') {
             when {
-                expression { env.USER_ACTION == 'Build' }
+                expression { env.INSTALL_ACTION && env.INSTALL_ACTION == 'Install' }
             }
             steps {
                 sh '''
@@ -108,8 +119,18 @@ pipeline {
                 '''
             }
         }
-       
-       
+
+        stage('Run Ansible Playbook') {
+            when {
+                expression { env.INSTALL_ACTION && env.INSTALL_ACTION == 'Install' }
+            }
+            steps {
+                sh '''
+                cd ansible
+                ansible-playbook -i aws_ec2.yml kafka-playbook.yml
+                '''
+            }
+        }
     }
 
     post {

@@ -16,6 +16,7 @@ pipeline {
                     env.USER_ACTION = input message: 'Select Action:', parameters: [
                         choice(name: 'ACTION', choices: ['Build', 'Destroy'], description: 'Choose whether to build or destroy infrastructure')
                     ]
+                    echo "User selected action: ${env.USER_ACTION}"
                 }
             }
         }
@@ -79,17 +80,17 @@ pipeline {
             steps {
                 script {
                     env.INSTALL_ACTION = input message: 'Infrastructure built successfully. Choose to install or skip.', parameters: [
-                        choice(name: 'INSTALL', choices: ['Install', 'Skip'], description: 'Install Kafka or Skip')
+                        choice(name: 'INSTALL_ACTION', choices: ['Install', 'Skip'], description: 'Install Kafka or Skip')
                     ]
-                //env.INSTALL_ACTION = userChoice
-                echo "User selected: ${env.INSTALL_ACTION}"    
+                    echo "User selected: ${env.INSTALL_ACTION}"    
                 }
             }
         }
+
         stage('Debug: Check Variables') {
            steps {
               script {
-                 //echo "USER_ACTION: ${env.USER_ACTION}"
+                 echo "USER_ACTION: ${env.USER_ACTION}"
                  echo "INSTALL_ACTION: ${env.INSTALL_ACTION}"
                }
            } 
@@ -97,7 +98,7 @@ pipeline {
 
         stage('Wait for Instances (if Install)') {
             when {
-                expression { env.INSTALL_ACTION && env.INSTALL_ACTION == 'Install' }
+                expression { env.INSTALL_ACTION == 'Install' }
             }
             steps {
                 echo "⏳ Waiting for EC2 instances to be ready..."
@@ -107,7 +108,7 @@ pipeline {
 
         stage('Check Ansible Inventory') {
             when {
-                expression { env.INSTALL_ACTION && env.INSTALL_ACTION == 'Install' }
+                expression { env.INSTALL_ACTION == 'Install' }
             }
             steps {
                 sh '''
@@ -120,7 +121,7 @@ pipeline {
 
         stage('Install Dependencies on Managed Nodes') {
             when {
-                expression { env.INSTALL_ACTION && env.INSTALL_ACTION == 'Install' }
+                expression { env.INSTALL_ACTION == 'Install' }
             }
             steps {
                 sh '''
@@ -132,7 +133,7 @@ pipeline {
 
         stage('Run Ansible Playbook') {
             when {
-                expression { env.INSTALL_ACTION && env.INSTALL_ACTION == 'Install' }
+                expression { env.INSTALL_ACTION == 'Install' }
             }
             steps {
                 sh '''

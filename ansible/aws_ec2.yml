@@ -5,9 +5,5 @@ regions:
 filters:
   tag:Role: kafka
 
- # hostnames:
-   #- private-ip-address
-
 compose:
   ansible_host: private_ip_address
-  # ansible_python_interpreter: "'/usr/bin/python3.12'"

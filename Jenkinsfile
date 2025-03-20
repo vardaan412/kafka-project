@@ -6,7 +6,6 @@ pipeline {
         TF_WORKING_DIR = 'terraform'
         TF_STATE_FILE = 'terraform/terraform.tfstate'
         ANSIBLE_HOST_KEY_CHECKING = 'False'
-        INSTALL_ACTION = ''
     }
 
     stages {

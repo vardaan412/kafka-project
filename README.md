@@ -27,7 +27,7 @@ The project creates the following AWS resources:
   - **Jenkins VPC** (For CI/CD pipeline execution)  
 
 - **Subnets**  
-  - **2 Public Subnets** (For Bastion Host and Jenkins)  
+  - **1 Public Subnets** (For Bastion Host and Jenkins)  
   - **2 Private Subnets** (For Kafka instances)  
 
 - **Networking Components**  
@@ -67,7 +67,7 @@ The project creates the following AWS resources:
 ### **1️⃣ Creating AWS Infrastructure with Terraform**  
 The first step in the project was to **define the entire AWS infrastructure using Terraform**. We created two separate VPCs—one for Kafka and one for Jenkins.  
 
-- The **Kafka VPC** contains 2 public and 2 private subnets.  
+- The **Kafka VPC** contains 1 public and 2 private subnets.  
 - The **Jenkins VPC** is separate to ensure isolation and security.  
 - **VPC Peering** was configured to allow Jenkins to communicate with Kafka instances.  
 - **Security Groups** were defined to restrict access to only required ports.  

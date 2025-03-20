@@ -81,7 +81,7 @@ pipeline {
                     env.INSTALL_ACTION = input message: 'Infrastructure built successfully. Choose to install or skip.', parameters: [
                         choice(name: 'INSTALL', choices: ['Install', 'Skip'], description: 'Install Kafka or Skip')
                     ]
-                env.INSTALL_ACTION = userChoice
+                //env.INSTALL_ACTION = userChoice
                 echo "User selected: ${env.INSTALL_ACTION}"    
                 }
             }
@@ -89,7 +89,7 @@ pipeline {
         stage('Debug: Check Variables') {
            steps {
               script {
-                 echo "USER_ACTION: ${env.USER_ACTION}"
+                 //echo "USER_ACTION: ${env.USER_ACTION}"
                  echo "INSTALL_ACTION: ${env.INSTALL_ACTION}"
                }
            } 

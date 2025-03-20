@@ -7,6 +7,6 @@ kafka_user: "kafka"
 kafka_group: "kafka"
 
 # Installation Paths
-kafka_home: "/home/{{ kafka_user }}"/Apache_kafka
+kafka_home: "/home/{{ kafka_user }}/Apache_kafka"
 kafka_tgz: "{{ kafka_home }}/kafka.tgz"
 kafka_config_dir: "{{ kafka_home }}/config/kraft"

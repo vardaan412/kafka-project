@@ -16,7 +16,7 @@
     name: "{{ kafka_user }}"
     group: "{{ kafka_group }}"
     create_home: yes
-    shell: /bin/bash"
+    shell: /bin/bash
   become: yes
 
 - name: Download Kafka as kafka user

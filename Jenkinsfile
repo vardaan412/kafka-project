@@ -80,19 +80,9 @@ pipeline {
                 script {
                     env.INSTALL_ACTION = input message: 'Infrastructure built successfully. Choose to install or skip.', parameters: [
                         choice(name: 'INSTALL_ACTION', choices: ['Install', 'Skip'], description: 'Install Kafka or Skip')
-                    ]
-                    echo "User selected: ${env.INSTALL_ACTION}"    
+                    ]  
                 }
             }
-        }
-
-        stage('Debug: Check Variables') {
-           steps {
-              script {
-                 echo "USER_ACTION: ${env.USER_ACTION}"
-                 echo "INSTALL_ACTION: ${env.INSTALL_ACTION}"
-               }
-           } 
         }
 
         stage('Wait for Instances (if Install)') {
@@ -158,7 +148,7 @@ pipeline {
                             </p>
                             <p style="color: #155724; font-size: 16px;">The job has completed successfully. 🎉</p>
                             <p style="color: #155724; font-size: 16px;"><strong>Check logs here:</strong>
-                                <a href="${env.BUILD_URL}" style="color: #155724; font-weight: bold;">${env.BUILD_URL}</a>
+                                <a href="${env.BUILD_URL}" style="color:#155724; text-decoration:none; font-weight:bold;">View Build Logs</a>
                             </p>
                         </div>
                     </body>
@@ -187,7 +177,7 @@ pipeline {
                             </p>
                             <p style="color: #721c24; font-size: 16px; font-weight: bold;">The job has failed. ❌</p>
                             <p style="color: #721c24; font-size: 16px;"><strong>Check logs here:</strong> 
-                                <a href="${env.BUILD_URL}" style="color: #721c24; font-weight: bold;">${env.BUILD_URL}</a>
+                                <a href="${env.BUILD_URL}" style="color:#155724; text-decoration:none; font-weight:bold;">View Build Logs</a>
                             </p>
                         </div>
                     </body>

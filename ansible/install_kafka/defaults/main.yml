@@ -1,3 +1,4 @@
+kafka_node_id: 1
 kafka_version: "3.9.0"
 scala_version: "2.13"
 

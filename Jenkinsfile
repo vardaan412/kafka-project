@@ -26,6 +26,15 @@ pipeline {
             }
         }
 
+        stage('Run GitLeaks Security Scan') {
+            steps {
+                sh '''
+                echo "🔍 Running GitLeaks security scan..."
+                gitleaks detect -v --source . --exit-code 1
+                '''
+            }
+        }
+
         stage('Terraform Init') {
             steps {
                 dir(TF_WORKING_DIR) {
@@ -146,7 +155,6 @@ pipeline {
                                 <strong>Build No:</strong> ${env.BUILD_NUMBER} <br>
                                 <strong>Triggered By:</strong> ${currentBuild.getBuildCauses().shortDescription}
                             </p>
-                            <p style="color: #155724; font-size: 16px;">The job has completed successfully. 🎉</p>
                             <p style="color: #155724; font-size: 16px;"><strong>Check logs here:</strong>
                                 <a href="${env.BUILD_URL}" style="color:#155724; text-decoration:none; font-weight:bold;">Click Here To View Build Logs</a>
                             </p>
